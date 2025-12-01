@@ -1,6 +1,6 @@
 
 
-import { it } from "mocha";
+
 import Sidebar from "../POM/sidebar";
 
 describe('For sidebar menu',()=>{

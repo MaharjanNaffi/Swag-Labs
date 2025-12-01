@@ -3,6 +3,14 @@
     "cypress": "^15.6.0"
   },
   "devDependencies": {
-    "dotenv": "^17.2.3"
+    "cypress-mochawesome-reporter": "^4.0.2",
+    "dotenv": "^17.2.3",
+    "mochawesome": "^7.1.4",
+    "mochawesome-merge": "^5.1.0",
+    "mochawesome-report-generator": "^6.3.2"
+  },
+  "scripts": {
+    "cy:run": "cypress run",
+    "test:report": "cypress run"
   }
 }
