@@ -107,17 +107,19 @@ jobs:
             Author:           ${{ github.actor }}
             Triggered By:     ${{ github.event_name }}
             
-            🔗 VIEW FULL REPORT
+            📎 ATTACHED REPORT
             ───────────────────────────────────────────────────────────────
-            Download the detailed HTML report from GitHub Actions Artifacts:
+            The detailed HTML test report is attached to this email.
+            Open the attachment in your browser to view the full report with:
+            - Individual test details
+            - Screenshots (if any)
+            - Test execution timeline
+            - Performance metrics
             
-            Repository:       ${{ github.repository }}
-            Run URL:          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            
-            📥 ARTIFACTS
+            📥 GITHUB ARTIFACTS (30 days retention)
             ───────────────────────────────────────────────────────────────
             Artifact Name:    cypress-report-${{ matrix.browser }}-${{ github.run_number }}
-            Retention:        30 days
+            Run URL:          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             
             ✨ STATUS SUMMARY
             ───────────────────────────────────────────────────────────────
@@ -128,6 +130,7 @@ jobs:
             ═══════════════════════════════════════════════════════════════
           to: ${{ secrets.EMAIL_USERNAME }}
           from: ${{ secrets.EMAIL_USERNAME }}
+          attachments: cypress/reports/index.html
         continue-on-error: true
 
       - name: 💬 Comment PR with Test Results
