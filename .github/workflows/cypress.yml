@@ -52,6 +52,30 @@ jobs:
           path: cypress/reports/
           retention-days: 30
 
+      - name: 📊 Parse Test Results
+        if: always()
+        id: test_results
+        run: |
+          # Extract test stats from index.html
+          TOTAL_TESTS=$(grep -oP '(?<="tests":\s)\d+' cypress/reports/index.html | head -1 || echo "0")
+          PASSED_TESTS=$(grep -oP '(?<="passes":\s)\d+' cypress/reports/index.html | head -1 || echo "0")
+          FAILED_TESTS=$(grep -oP '(?<="failures":\s)\d+' cypress/reports/index.html | head -1 || echo "0")
+          DURATION=$(grep -oP '(?<="duration":\s)\d+' cypress/reports/index.html | head -1 || echo "0")
+          
+          echo "TOTAL_TESTS=$TOTAL_TESTS" >> $GITHUB_OUTPUT
+          echo "PASSED_TESTS=$PASSED_TESTS" >> $GITHUB_OUTPUT
+          echo "FAILED_TESTS=$FAILED_TESTS" >> $GITHUB_OUTPUT
+          echo "DURATION=$DURATION" >> $GITHUB_OUTPUT
+          
+          # Calculate pass percentage
+          if [ "$TOTAL_TESTS" -gt 0 ]; then
+            PASS_PERCENT=$((PASSED_TESTS * 100 / TOTAL_TESTS))
+          else
+            PASS_PERCENT=0
+          fi
+          echo "PASS_PERCENT=$PASS_PERCENT" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
       - name: 📧 Send Email Report
         if: always()
         uses: dawidd6/action-send-mail@v3
@@ -60,19 +84,50 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "✅ Cypress Test Report - Run #${{ github.run_number }} - ${{ job.status }}"
+          subject: "🧪 Cypress Test Report - Run #${{ github.run_number }} - ${{ job.status }}"
           body: |
-            Cypress Test Report
+            ═══════════════════════════════════════════════════════════════
+                        CYPRESS AUTOMATED TEST REPORT
+            ═══════════════════════════════════════════════════════════════
             
-            Workflow Run: #${{ github.run_number }}
-            Status: ${{ job.status }}
-            Branch: ${{ github.ref_name }}
-            Commit: ${{ github.sha }}
+            📊 TEST SUMMARY
+            ───────────────────────────────────────────────────────────────
+            Total Tests:      ${{ steps.test_results.outputs.TOTAL_TESTS }}
+            ✅ Passed:        ${{ steps.test_results.outputs.PASSED_TESTS }}
+            ❌ Failed:        ${{ steps.test_results.outputs.FAILED_TESTS }}
+            Success Rate:     ${{ steps.test_results.outputs.PASS_PERCENT }}%
+            Duration:         ${{ steps.test_results.outputs.DURATION }}ms
             
-            Test report is available in GitHub Actions artifacts.
+            📋 EXECUTION DETAILS
+            ───────────────────────────────────────────────────────────────
+            Workflow Run:     #${{ github.run_number }}
+            Status:           ${{ job.status }}
+            Branch:           ${{ github.ref_name }}
+            Commit SHA:       ${{ github.sha }}
+            Author:           ${{ github.actor }}
+            Triggered By:     ${{ github.event_name }}
+            
+            🔗 VIEW FULL REPORT
+            ───────────────────────────────────────────────────────────────
+            Download the detailed HTML report from GitHub Actions Artifacts:
+            
+            Repository:       ${{ github.repository }}
+            Run URL:          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            📥 ARTIFACTS
+            ───────────────────────────────────────────────────────────────
+            Artifact Name:    cypress-report-${{ matrix.browser }}-${{ github.run_number }}
+            Retention:        30 days
+            
+            ✨ STATUS SUMMARY
+            ───────────────────────────────────────────────────────────────
+            ${{ job.status == 'success' && '✅ All tests passed! The code is ready.' || '❌ Tests failed! Please review and fix the issues.' }}
+            
+            ═══════════════════════════════════════════════════════════════
+            This is an automated email from GitHub Actions CI/CD Pipeline
+            ═══════════════════════════════════════════════════════════════
           to: ${{ secrets.EMAIL_USERNAME }}
           from: ${{ secrets.EMAIL_USERNAME }}
-          attachments: cypress/reports/index.html
         continue-on-error: true
 
       - name: 💬 Comment PR with Test Results
