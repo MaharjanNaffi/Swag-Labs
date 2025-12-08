@@ -6,6 +6,7 @@ export default class Sidebar{
     aboutLocator = '#about_sidebar_link'
     logoutLocator = '#logout_sidebar_link'
     resetAppLocator = '#reset_sidebar_link'
+    firstProductLocator ='#add-to-cart-sauce-labs-backpack'
 
 
 
@@ -51,7 +52,9 @@ export default class Sidebar{
 
     }
     clickReset(){
+        cy.get(this.firstProductLocator).click()
         this.ensureSidebarOpen()
         cy.get(this.resetAppLocator).click()
+        cy.get(this.firstProductLocator).should('not.be.visible')
     }
 }
