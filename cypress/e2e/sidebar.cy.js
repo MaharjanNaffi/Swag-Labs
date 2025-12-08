@@ -1,6 +1,5 @@
 
 
-import { it } from "mocha";
 import Sidebar from "../POM/sidebar";
 
 describe('For sidebar menu',()=>{
@@ -20,8 +19,18 @@ describe('For sidebar menu',()=>{
     it('TC-SIDEBAR-003: To verify users can close the sidebar',()=>{
         sidebar.clickCrossButton()
     })
-    it('TC-SIDEBAR-004: To verify users',()=>{
+    it('TC-SIDEBAR-004: To verify users can click on the ALL Items ',()=>{
+        sidebar.clickALLItems()
 
+    })
+    it('TC-SIDEBAR-005: To verify users can click on the About  ',()=>{
+        sidebar.clickAbout()
+    })
+    it('TC-SIDEBAR-006: To verify users can click on the Logout  ',()=>{
+        sidebar.clickLogout()
+    })
+    it.only('TC-SIDEBAR-007: To verify users can click on the Reset App State  ',()=>{
+        sidebar.clickReset()
     })
 
 })
