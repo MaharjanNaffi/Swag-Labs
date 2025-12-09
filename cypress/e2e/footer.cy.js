@@ -30,5 +30,5 @@ describe('Footer Section Tests', () => {
         footer.clickCopyrightLink()
         cy.url().should('include','saucelabs.com')
     })
-
+//
 })
