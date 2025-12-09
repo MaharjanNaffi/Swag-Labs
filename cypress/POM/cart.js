@@ -72,9 +72,19 @@ export default class Cart {
         })
     }
 
+    checkProductOrderInCart(){
+        cy.get(this.firstProduct).click()
+        cy.get(this.secondProduct).click()
+        this.clickCartIcon()
+        cy.get(this.cartItemName).then((items) => {
+            expect(items[0]).to.contain.text('Sauce Labs Backpack')
+            expect(items[1]).to.contain.text('Sauce Labs Bike Light')
+        })
+    }
     removeProductFromCart(productLocator) {
         
         cy.get(this.firstProductRemove).click()
+        
     }
     clickcontinueShopping() {
         cy.get(this.continueShoppingLocator).click()
