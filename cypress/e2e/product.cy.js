@@ -37,5 +37,11 @@ describe('Product page',()=>{
     it('TC-PRODUCT-008: To verify users can filter product from price',()=>{
         prod.filterholi()
     })
-    
+    it.only("TC-PRODUCT-009: To verify product description of Sauce Labs Backpack",()=>{
+        prod.checkDescription()
+
+    })
+    it.only("TC-PRODUCT-010: To verify product title of T-shirt",()=>{
+        prod.checkTitle()
+    })
 })

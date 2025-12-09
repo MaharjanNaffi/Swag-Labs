@@ -9,6 +9,8 @@ export default class ProductPage{
     removeProductLocator = '#remove-sauce-labs-backpack'
     backLocator = '[data-test="back-to-products"]'
     filterPriceLocator= '[data-test="inventory-item-price"]'
+    backpackDescriptionLocator = '.inventory_item_desc'
+    tshirtTitleLocator = '.inventory_item_name '
 
     assertProductTitle(){
         cy.get(this.productTitleLocator).should('be.visible')
@@ -49,6 +51,14 @@ export default class ProductPage{
             const sortedDesc = [...uiPrices].sort((a, b) => b - a)
             expect(uiPrices, 'Products are sorted High → Low').to.deep.equal(sortedDesc)
         })
+    }
+    checkDescription(){
+        cy.get(this.backpackDescriptionLocator).eq(0).should('be.visible')
+        cy.get(this.backpackDescriptionLocator).eq(0).should('contain.text','Carry all the things with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.')
+    }
+    checkTitle(){
+        cy.get(this.tshirtTitleLocator).eq(5).should('be.visible')
+        cy.get(this.tshirtTitleLocator).eq(5).should('have.text','T-Shirt')
     }
     assertProductImage(){
         cy.get(this.productImageLocator).should('be.visible')
